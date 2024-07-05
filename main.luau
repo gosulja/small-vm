@@ -7,7 +7,8 @@ local Opcode = {
     ADD = 0x02,
     SUB = 0x03,
     MUL = 0x04,
-    DIV = 0x05
+    DIV = 0x05,
+    CONCAT = 0x06,
 }
 
 function value(t: ValueType, v: any): Value
@@ -64,6 +65,10 @@ function run(program: {number}, constants: {Value})
             local right = pop().value
             local left = pop().value
             push(value("NUMBER", left / right))
+        elseif opcode == Opcode.CONCAT then
+            local left = pop().value
+            local right = pop().value
+            push(value("STRING", left .. right))
         else
             error(string.format("Unknown opcode: 0x%d", opcode))
         end
@@ -73,11 +78,14 @@ function run(program: {number}, constants: {Value})
 end
 
 local constants = {
-    value("STRING", "hello, world!"),
+    value("STRING", "world!"),
+    value("STRING", "hello, "),
 }
 
 local program = {
     Opcode.CONST, 1,
+    Opcode.CONST, 2,
+    Opcode.CONCAT,
     Opcode.HALT
 }
 
