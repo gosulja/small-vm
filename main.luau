@@ -1,5 +1,5 @@
-type ValueType = "NUMBER"
-type Value = { type: ValueType, value: number }
+type ValueType = "NUMBER" | "STRING"
+type Value = { type: ValueType, value: any }
 
 local Opcode = {
     HALT = 0x00,
@@ -10,7 +10,7 @@ local Opcode = {
     DIV = 0x05
 }
 
-function value(t: ValueType, v: number): Value
+function value(t: ValueType, v: any): Value
     return {
         type = t,
         value = v
@@ -73,14 +73,11 @@ function run(program: {number}, constants: {Value})
 end
 
 local constants = {
-    value("NUMBER", 20),
-    value("NUMBER", 10),
+    value("STRING", "hello, world!"),
 }
 
 local program = {
     Opcode.CONST, 1,
-    Opcode.CONST, 2,
-    Opcode.DIV,
     Opcode.HALT
 }
 
