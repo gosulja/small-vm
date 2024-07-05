@@ -65,7 +65,7 @@ function run(program: {number}, constants: {Value})
             local left = pop().value
             push(value("NUMBER", left / right))
         else
-            error(string.format("Unknown opcode: %d", opcode))
+            error(string.format("Unknown opcode: 0x%d", opcode))
         end
     end
 
