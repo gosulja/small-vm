@@ -3,8 +3,11 @@ type Value = { type: ValueType, value: number }
 
 local Opcode = {
     HALT = 0x00,
-    ADD = 0x01,
-    CONST = 0x02,
+    CONST = 0x01,
+    ADD = 0x02,
+    SUB = 0x03,
+    MUL = 0x04,
+    DIV = 0x05
 }
 
 function value(t: ValueType, v: number): Value
@@ -19,8 +22,8 @@ function run(program: {number}, constants: {Value})
     local sp = 1
     local stack: {Value} = {}
 
-    local function push(value: Value)
-        stack[sp] = value
+    local function push(v: Value)
+        stack[sp] = v
         sp += 1
     end
 
@@ -49,6 +52,18 @@ function run(program: {number}, constants: {Value})
             local right = pop().value
             local left = pop().value
             push(value("NUMBER", left + right))
+        elseif opcode == Opcode.SUB then
+            local right = pop().value
+            local left = pop().value
+            push(value("NUMBER", left - right))
+        elseif opcode == Opcode.MUL then
+            local right = pop().value
+            local left = pop().value
+            push(value("NUMBER", left * right))
+        elseif opcode == Opcode.DIV then
+            local right = pop().value
+            local left = pop().value
+            push(value("NUMBER", left / right))
         else
             error(string.format("Unknown opcode: %d", opcode))
         end
@@ -58,14 +73,14 @@ function run(program: {number}, constants: {Value})
 end
 
 local constants = {
-    value("NUMBER", 10),
     value("NUMBER", 20),
+    value("NUMBER", 10),
 }
 
 local program = {
     Opcode.CONST, 1,
     Opcode.CONST, 2,
-    Opcode.ADD,
+    Opcode.DIV,
     Opcode.HALT
 }
 
